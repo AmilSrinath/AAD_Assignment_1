@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class CustomerDTO {
-    private String Cus_ID;
+    private String cus_id;
     private String name;
     private String nic;
     private String address;

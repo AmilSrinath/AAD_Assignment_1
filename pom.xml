@@ -88,6 +88,11 @@
           <version>8.0.33</version>
       </dependency>
       <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+          <version>1.7.32</version> <!-- Use the latest version available -->
+      </dependency>
+      <dependency>
           <groupId>jakarta.servlet</groupId>
           <artifactId>jakarta.servlet-api</artifactId>
           <version>6.0.0</version>

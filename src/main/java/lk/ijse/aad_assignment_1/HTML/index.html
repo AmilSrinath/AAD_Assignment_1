@@ -235,9 +235,6 @@
       $("#myTabContent").css('display','none');
     })
 
-    const nicPattern = /^\d{9}[VvXx]$/;
-    const regNIC = new RegExp(nicPattern);
-
     //-----------------------------Customer--------------------------------
     var row_index = null;
     //Submit
@@ -247,16 +244,51 @@
       let nic = $("#nic").val();
       let address = $("#address").val();
 
-      console.log(cus_id)
-      console.log(name)
-      console.log(nic)
-      console.log(address)
+      console.log(cus_id);
+      console.log(name);
+      console.log(nic);
+      console.log(address);
 
-      let record = `<tr><td class="cus_id">${cus_id}</td><td class="name">${name}</td><td class="nic">${nic}</td><td class="address">${address}</td></tr>`;
+      const customer = {
+        cus_id:cus_id,
+        name:name,
+        nic:nic,
+        address:address
+      }
 
-      $("#customerbtns>button[type='reset']").click();
+      const custJSON = JSON.stringify(customer);
+      console.log(custJSON);
 
-      if(!cus_id | !name | !nic | !address ){
+      const sendAjax = (customerJSON)=>{
+        const  http = new XMLHttpRequest();
+        http.onreadystatechange = () =>{
+          if (http.readyState == 4 && http.status == 200){
+            console.log("Done");
+            console.log(http.readyState);
+          }else {
+            console.log("Error");
+            console.log(http.readyState);
+          }
+        }
+        http.open("POST","http://localhost:8080/Assignment/customer",true);
+        http.setRequestHeader("Content-Type","application/json");
+        http.send(customerJSON);
+
+        $.ajax({
+          usl:"http://localhost:8080/Assignment/customer",
+          type:"POST",
+          data:customerJSON,
+          headers:{"Content.Type":"application/json"}
+        })
+      }
+      sendAjax(custJSON);
+
+
+      //let record = `<tr><td class="cus_id">${cus_id}</td><td class="name">${name}</td><td class="nic">${nic}</td><td class="address">${address}</td></tr>`;
+
+      //$("#customerbtns>button[type='reset']").click();
+
+      /*if(!cus_id | !name | !nic | !address ){
         Swal.fire({
           icon: 'error',
           title: 'Please Check Text Field',
@@ -270,7 +302,7 @@
           timer: 1500
         })
         $("#customer-tbl-body").append(record);
-      }
+      }*/
     });
 
     //Click Row
