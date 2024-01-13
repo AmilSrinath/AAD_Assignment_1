@@ -9,11 +9,13 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * @author Amil Srinath
+ */
 @WebFilter(urlPatterns = "/*")
 public class SecurityFilter extends HttpFilter {
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
-        System.out.println("Security Filter");
         chain.doFilter(req,res);
     }
 }

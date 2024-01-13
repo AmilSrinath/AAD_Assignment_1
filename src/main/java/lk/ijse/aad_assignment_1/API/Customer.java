@@ -22,5 +22,8 @@ public class Customer extends HttpServlet {
         CustomerDTO customerDTO = jsonb.fromJson(req.getReader(), CustomerDTO.class);
 
         System.out.println(customerDTO.getCus_ID());
+        System.out.println(customerDTO.getName());
+        System.out.println(customerDTO.getNic());
+        System.out.println(customerDTO.getAddress());
     }
 }
