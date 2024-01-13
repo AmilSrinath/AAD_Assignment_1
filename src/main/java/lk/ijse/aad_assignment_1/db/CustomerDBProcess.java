@@ -12,7 +12,7 @@ import java.sql.SQLException;
  */
 public class CustomerDBProcess {
     final static Logger logger = LoggerFactory.getLogger(CustomerDBProcess.class);
-    public void saveCustomer(CustomerDTO customerDTO, Connection connection){
+    public boolean saveCustomer(CustomerDTO customerDTO, Connection connection){
         try {
             var ps = connection.prepareStatement("INSERT INTO customer(cus_ID,name,nic,address) VALUES (?,?,?,?)");
             ps.setString(1, customerDTO.getCus_id());
@@ -23,9 +23,11 @@ public class CustomerDBProcess {
             if (ps.executeUpdate() != 0) {
                 logger.info("Data saved");
                 System.out.println("Data saved");
+                return true;
             } else {
                 logger.error("Failed to save");
                 System.out.println("Failed to save");
+                return false;
             }
 
         } catch (SQLException e) {

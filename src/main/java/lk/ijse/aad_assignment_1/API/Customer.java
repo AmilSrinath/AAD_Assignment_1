@@ -14,6 +14,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -39,6 +40,10 @@ public class Customer extends HttpServlet {
         Jsonb jsonb = JsonbBuilder.create();
         CustomerDTO customerDTO = jsonb.fromJson(req.getReader(), CustomerDTO.class);
         CustomerDBProcess customerDBProcess = new CustomerDBProcess();
-        customerDBProcess.saveCustomer(customerDTO,connection);
+        if(customerDBProcess.saveCustomer(customerDTO, connection)){
+            PrintWriter writer = resp.getWriter();
+            writer.write("<h1>Customer Saved !</h1>");
+        }
+
     }
 }
