@@ -3,7 +3,6 @@ package lk.ijse.aad_assignment_1.API;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebInitParam;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,7 +28,6 @@ public class Customer extends HttpServlet {
         try {
             InitialContext ctx = new InitialContext();
             DataSource pool = (DataSource) ctx.lookup("java:comp/env/jdbc/pos");
-            System.out.println(pool);
             this.connection = pool.getConnection();
         } catch (SQLException | NamingException e) {
             throw new RuntimeException(e);
@@ -40,14 +38,7 @@ public class Customer extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Jsonb jsonb = JsonbBuilder.create();
         CustomerDTO customerDTO = jsonb.fromJson(req.getReader(), CustomerDTO.class);
-
-        System.out.println(customerDTO.getCus_id());
-        System.out.println(customerDTO.getName());
-        System.out.println(customerDTO.getNic());
-        System.out.println(customerDTO.getAddress());
-
         CustomerDBProcess customerDBProcess = new CustomerDBProcess();
         customerDBProcess.saveCustomer(customerDTO,connection);
-
     }
 }
