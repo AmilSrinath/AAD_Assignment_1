@@ -25,11 +25,9 @@ public class CustomerDBProcess {
 
             if (ps.executeUpdate() != 0) {
                 logger.info("Data saved");
-                System.out.println("Data saved");
                 return true;
             } else {
                 logger.error("Failed to save");
-                System.out.println("Failed to save");
                 return false;
             }
 
@@ -71,5 +69,24 @@ public class CustomerDBProcess {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public boolean updateCustomer(CustomerDTO customerDTO, Connection connection) {
+        try {
+            var ps = connection.prepareStatement("UPDATE customer set name=?, nic=?, address=? where cus_id=?");
+            ps.setString(1, customerDTO.getName());
+            ps.setString(2, customerDTO.getNic());
+            ps.setString(3, customerDTO.getAddress());
+            ps.setString(4, customerDTO.getCus_id());
+
+            if (ps.executeUpdate() != 0) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

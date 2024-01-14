@@ -55,7 +55,6 @@ public class Customer extends HttpServlet {
         CustomerDBProcess customerDBProcess = new CustomerDBProcess();
 
         if(customerDBProcess.saveCustomer(customerDTO, connection)){
-            System.out.println("Save Done");
             PrintWriter writer = resp.getWriter();
             writer.write("Customer Saved !");
         }
@@ -63,9 +62,20 @@ public class Customer extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println(req.getParameter("cus_id"));
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Jsonb jsonb = JsonbBuilder.create();
+        CustomerDTO customerDTO = jsonb.fromJson(req.getReader(), CustomerDTO.class);
 
+        CustomerDBProcess customerDBProcess = new CustomerDBProcess();
+
+        if(customerDBProcess.updateCustomer(customerDTO, connection)){
+            PrintWriter writer = resp.getWriter();
+            writer.write("Customer Updated !");
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if(new CustomerDBProcess().deleteCustomer(req.getParameter("cus_id"),connection)){
             resp.getWriter().write("Customer Deleted!");
         }
