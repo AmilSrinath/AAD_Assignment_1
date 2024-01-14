@@ -61,4 +61,13 @@ public class Customer extends HttpServlet {
         }
 
     }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println(req.getParameter("cus_id"));
+
+        if(new CustomerDBProcess().deleteCustomer(req.getParameter("cus_id"),connection)){
+            resp.getWriter().write("Customer Deleted!");
+        }
+    }
 }

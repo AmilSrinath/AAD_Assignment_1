@@ -56,4 +56,20 @@ public class CustomerDBProcess {
         }
         return customerDTOS;
     }
+
+    public boolean deleteCustomer(String cusId, Connection connection) {
+        try {
+            var ps = connection.prepareStatement("DELETE from customer where cus_id=?");
+            ps.setString(1, cusId);
+
+            if (ps.executeUpdate() != 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
