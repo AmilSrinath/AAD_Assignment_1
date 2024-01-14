@@ -277,9 +277,12 @@
         $.ajax({
           usl:"http://localhost:8080/Assignment/customer",
           type:"POST",
-          data:customerJSON,
-          headers:{"Content.Type":"application/json"}
-        })
+          data:custJSON,
+          headers:{"Content.Type":"application/json"},
+          success: function(response){
+            alert(response);
+          }
+        });
       }
       sendAjax(custJSON);
 

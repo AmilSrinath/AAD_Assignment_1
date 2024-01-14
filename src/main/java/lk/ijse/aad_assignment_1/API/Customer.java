@@ -39,10 +39,13 @@ public class Customer extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Jsonb jsonb = JsonbBuilder.create();
         CustomerDTO customerDTO = jsonb.fromJson(req.getReader(), CustomerDTO.class);
+
         CustomerDBProcess customerDBProcess = new CustomerDBProcess();
+
         if(customerDBProcess.saveCustomer(customerDTO, connection)){
+            System.out.println("Save Done");
             PrintWriter writer = resp.getWriter();
-            writer.write("<h1>Customer Saved !</h1>");
+            writer.write("Customer Saved !");
         }
 
     }
