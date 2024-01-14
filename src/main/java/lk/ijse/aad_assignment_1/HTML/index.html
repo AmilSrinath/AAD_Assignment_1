@@ -238,75 +238,48 @@
     //-----------------------------Customer--------------------------------
     var row_index = null;
     //Submit
-    $("#customerbtns>button[type='button']").eq(0).on("click", () => {
+    $("#customerbtns > button[type='button']").eq(0).on("click", () => {
       let cus_id = $("#cus_id").val();
       let name = $("#name").val();
       let nic = $("#nic").val();
       let address = $("#address").val();
 
-      console.log(cus_id);
-      console.log(name);
-      console.log(nic);
-      console.log(address);
-
       const customer = {
-        cus_id:cus_id,
-        name:name,
-        nic:nic,
-        address:address
-      }
+        cus_id: cus_id,
+        name: name,
+        nic: nic,
+        address: address
+      };
 
       const custJSON = JSON.stringify(customer);
-      console.log(custJSON);
 
-      const sendAjax = (customerJSON)=>{
-        const  http = new XMLHttpRequest();
-        http.onreadystatechange = () =>{
-          if (http.readyState == 4 && http.status == 200){
-            console.log("Done");
-            console.log(http.readyState);
-          }else {
-            console.log("Error");
-            console.log(http.readyState);
-          }
-        }
-        http.open("POST","http://localhost:8080/Assignment/customer",true);
-        http.setRequestHeader("Content-Type","application/json");
-        http.send(customerJSON);
-
+      const sendAjax = (customerJSON) => {
         $.ajax({
-          usl:"http://localhost:8080/Assignment/customer",
-          type:"POST",
-          data:custJSON,
-          headers:{"Content.Type":"application/json"},
-          success: function(response){
-            alert(response);
+          url: "http://localhost:8080/Assignment/customer",
+          type: "POST",
+          data: customerJSON,
+          contentType: "application/json",
+          success: function (response) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Customer Saved Successful',
+              showConfirmButton: false,
+              timer: 1500
+            })
+          },
+          error: function (error) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Please Check Text Field',
+              text: 'Something went wrong!'
+            })
           }
         });
-      }
+      };
+
       sendAjax(custJSON);
-
-
-      //let record = `<tr><td class="cus_id">${cus_id}</td><td class="name">${name}</td><td class="nic">${nic}</td><td class="address">${address}</td></tr>`;
-
-      //$("#customerbtns>button[type='reset']").click();
-
-      /*if(!cus_id | !name | !nic | !address ){
-        Swal.fire({
-          icon: 'error',
-          title: 'Please Check Text Field',
-          text: 'Something went wrong!'
-        })
-      }else{
-        Swal.fire({
-          icon: 'success',
-          title: 'Customer Saved Successful',
-          showConfirmButton: false,
-          timer: 1500
-        })
-        $("#customer-tbl-body").append(record);
-      }*/
     });
+
 
     //Click Row
     $("#customer-tbl-body").on("click", "tr", function() {
