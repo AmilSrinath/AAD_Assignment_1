@@ -5,7 +5,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Amil Srinath
@@ -33,5 +36,24 @@ public class CustomerDBProcess {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<CustomerDTO> getAllCustomer(Connection connection) {
+        List<CustomerDTO> customerDTOS = new ArrayList<>();
+        try {
+            ResultSet resultSet = connection.prepareStatement("select * from customer").executeQuery();
+            while(resultSet.next()) {
+                CustomerDTO customerDTO = new CustomerDTO(
+                        resultSet.getString(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4)
+                );
+                customerDTOS.add(customerDTO);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return customerDTOS;
     }
 }
