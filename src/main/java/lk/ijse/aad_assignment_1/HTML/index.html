@@ -210,6 +210,7 @@
 
   <script>
     loadAllCustomer();
+    loadAllItem();
     $("#customerForm").css('display','none');
     $("#storeForm").css('display','none');
     $("#placeOrderForm").css('display','none');
@@ -228,6 +229,7 @@
       $("#storeForm").css('display','block');
       $("#placeOrderForm").css('display','none');
       $("#myTabContent").css('display','none');
+      loadAllItem();
     })
 
     $("#place-order-nav").on('click',()=>{
@@ -392,6 +394,20 @@
     //-----------------------------Store--------------------------------
     var row_index1 = null;
 
+    function loadAllItem() {
+      $("#item-tbl-body").empty();
+      $.ajax({
+        url: "http://localhost:8080/Assignment/item",
+        type: "GET",
+        success: function (response) {
+          for (const item of response){
+            let record = `<tr><td class="item_id">${item.item_id}</td><td class="item_name">${item.item_name}</td><td class="quantity">${item.quantity}</td><td class="price">${item.price}</td><td class="description">${item.description}</td></tr>`;
+            $("#item-tbl-body").append(record);
+          }
+        }
+      })
+    }
+
     //Submit
     $("#storebtns>button[type='button']").eq(0).on("click", () => {
       let item_id = $("#item_id").val();
@@ -399,9 +415,6 @@
       let quantity = $("#quantity").val();
       let price = $("#price").val();
       let description = $("#description").val();
-
-      /*let record = `<tr><td class="item_id">${item_id}</td><td class="item_name">${item_name}</td><td class="quantity">${quantity}</td><td class="price">${price}</td><td class="description">${description}</td></tr>`;
-      $("#item-tbl-body").append(record);*/
 
       //------------------------------------------------------
       const item = {
@@ -421,7 +434,7 @@
           data: itemJSON,
           contentType: "application/json",
           success: function () {
-            loadAllCustomer();
+            loadAllItem();
             $("#storebtns>button[type='reset']").click();
             Swal.fire({
               icon: 'success',

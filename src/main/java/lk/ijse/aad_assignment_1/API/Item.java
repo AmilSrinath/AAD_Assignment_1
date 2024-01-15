@@ -1,5 +1,6 @@
 package lk.ijse.aad_assignment_1.API;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.ServletException;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @author Amil Srinath
@@ -35,6 +37,16 @@ public class Item extends HttpServlet {
         } catch (SQLException | NamingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        List<ItemDTO> allItem = new ItemDBProcess().getAllItem(connection);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonResult = objectMapper.writeValueAsString(allItem);
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.getWriter().write(jsonResult);
     }
 
     @Override
