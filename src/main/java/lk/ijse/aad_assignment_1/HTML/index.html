@@ -153,52 +153,89 @@
   <p id="placeOrder">Place Order</p>
   <div class="row">
     <!--Form-->
-    <div class="col col-xl-6 col-lg-6 col-md-12 col-sm-12 col12">
+    <div id="PlaceOrderTextField" class="col col-xl-6 col-lg-6 col-md-12 col-sm-12 col12">
       <form>
-        <div class="mb-3">
-          <label for="item_id" class="form-label">Item_ID</label>
-          <input type="number" class="form-control" id="item_id_placeOrder">
+        <div id="placeOrderText1">
+          <div class="mt-lg-2 mb-lg-2 m-lg-3">
+            <label for="Order_id" class="form-label">Order_ID</label>
+            <h3 id="Order_id">O001</h3>
+          </div>
         </div>
 
-        <div class="mb-3">
-          <label for="quantity" class="form-label">Quantity</label>
-          <input type="number" class="form-control" id="quantity_placeOrder">
+        <div id="placeOrderText3" class="mb-lg-2">
+          <div class="mt-lg-2 mb-lg-2 m-lg-3">
+            <label for="selectCus_ID" class="form-label">Customer Name</label>
+            <select id="selectCus_ID" class="form-select mb-3" aria-label="Default select example"></select>
+          </div>
         </div>
 
-        <div id="placeOrderbtns" class="mt-4">
-          <button type="button" class="btn btn-success">Add</button>
+        <div id="placeOrderText2">
+          <div class="m-lg-3">
+            <label for="select" class="form-label">Select Item ID</label>
+            <select id="select" class="form-select mb-3" aria-label="Default select example"></select>
+
+            <div id="ItemNameDiv">
+              <label for="itemName" class="form-label">  Item Name :</label>
+              <h5 id="itemName">______________________________</h5>
+            </div>
+
+            <div id="ItemQutDiv">
+              <label for="itemQut" class="form-label">  Hand On Quantity :</label>
+              <h5 id="itemQut">_____________</h5>
+            </div>
+
+            <div id="ItemPriceDiv">
+              <label for="itemPrice" class="form-label">  Unite Price :</label>
+              <h5 id="itemPrice">___________</h5>
+            </div>
+
+            <div class="mb-3">
+              <label for="quantity" class="form-label">Quantity</label>
+              <input type="number" class="form-control" id="quantity_placeOrder">
+            </div>
+
+            <div id="placeOrderbtns" class="mt-4">
+              <button type="button" class="btn btn-success">Add</button>
+              <button id="placeOrderbtnResetbtn" type="reset" class="btn btn-warning">Reset</button>
+            </div>
+          </div>
         </div>
       </form>
     </div>
     <!--Table-->
     <div class="col col-xl-6 col-lg-6 col-md-12 col-sm-12 col12">
-      <table class="table">
+      <table id="tblPalceOrder" class="table">
         <thead>
         <tr>
           <th class="table-heading" scope="col">Item_ID</th>
+          <th class="table-heading" scope="col">Unite_Price</th>
           <th class="table-heading" scope="col">Quantity</th>
           <th class="table-heading" scope="col">Total</th>
+          <th class="table-heading" scope="col">Status</th>
         </tr>
         </thead>
         <tbody class="table-tr" id="placeOrder-tbody"></tbody>
       </table>
+
       <p id="total" class="fs-2">Total :</p>
-      <h2 id="tot"></h2>
+      <h2 id="tot">0</h2>
 
-      <div class="input-group mb-3">
-        <input id="amount" type="text" class="form-control" placeholder="Amount" aria-label="Recipient's username" aria-describedby="basic-addon2">
-        <div class="input-group-append">
-          <button id="cal" class="btn btn-outline-secondary" type="button">Calculate</button>
-        </div>
+      <div class="input-group mt-2 mb-2">
+        <label for="discount"></label>
+        <input id="discount" placeholder="Discount" type="number" class="form-control">
+        <span class="input-group-text">%</span>
+        <button id="calculate">Calculate</button>
       </div>
 
-      <p id="cash1" class="fs-2">Cash :</p>
-      <h2 id="cash2"></h2>
+      <p id="netTot" class="fs-2">Net Total :</p>
+      <h2 id="netTotal">0</h2>
 
-      <div class="mt-4">
-          <button type="button" class="btn btn-primary">Place Order</button>
+      <label for="amount"></label>
+      <input id="amount" type="number" class="form-control" placeholder="Amount">
+
+      <div id="placeOrderbtns2" class="mt-4">
+        <button id="place_Order" type="button" class="btn btn-primary">Place Order</button>
       </div>
-
     </div>
   </div>
 </div>
@@ -237,6 +274,7 @@
       $("#storeForm").css('display','none');
       $("#placeOrderForm").css('display','block');
       $("#myTabContent").css('display','none');
+      loadAllCustomer();
     })
 
     //-----------------------------Customer--------------------------------
@@ -244,6 +282,10 @@
 
     function loadAllCustomer() {
       $("#customer-tbl-body").empty();
+
+      $("#selectCus_ID").empty();
+      $("#selectCus_ID").html(`<option className="options">Select Customer</option>`);
+
       $.ajax({
         url: "http://localhost:8080/Assignment/customer",
         type: "GET",
@@ -251,6 +293,10 @@
           for (const customer of response){
             let record = `<tr><td class="cus_id">${customer.cus_id}</td><td class="name">${customer.name}</td><td class="nic">${customer.nic}</td><td class="address">${customer.address}</td></tr>`;
             $("#customer-tbl-body").append(record);
+          }
+          for (const customer of response){
+            let recode = `<option class="options">${customer.name}</option>`
+            $("#selectCus_ID").append(recode);
           }
         }
       })
@@ -395,6 +441,10 @@
 
     function loadAllItem() {
       $("#item-tbl-body").empty();
+
+      $("#select").empty();
+      $("#select").html(`<option className="options">Select Item ID</option>`);
+
       $.ajax({
         url: "http://localhost:8080/Assignment/item",
         type: "GET",
@@ -402,6 +452,10 @@
           for (const item of response){
             let record = `<tr><td class="item_id">${item.item_id}</td><td class="item_name">${item.item_name}</td><td class="quantity">${item.quantity}</td><td class="price">${item.price}</td><td class="description">${item.description}</td></tr>`;
             $("#item-tbl-body").append(record);
+          }
+          for (const item of response){
+            let recode = `<option class="options">${item.item_id}</option>`
+            $("#select").append(recode);
           }
         }
       })
@@ -550,27 +604,6 @@
 
 
     //-----------------------------Place Order--------------------------------
-    //Submit
-    let netTot = 0;
-    $("#placeOrderbtns>button[type='button']").eq(0).on("click", () => {
-      let item_id = $("#item_id_placeOrder").val();
-      let quantity = $("#quantity_placeOrder").val();
-      let total = quantity*100;
-
-      let record = `<tr><td class="item_id">${item_id}</td><td class="quantity">${quantity}</td><td class="price">${total}</td></tr>`;
-      $("#placeOrder-tbody").append(record);
-
-      netTot+=total;
-
-      $("#tot").text(netTot);
-    });
-
-    //Calculate
-    $("#cal").on("click", () => {
-      let cash = $("#amount").val()-netTot;
-
-      $("#cash2").text(cash);
-    });
 
 
     /* ------------------------------Form Design----------------------------------- */
