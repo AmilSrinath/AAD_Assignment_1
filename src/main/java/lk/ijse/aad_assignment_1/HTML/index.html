@@ -298,7 +298,6 @@
       sendAjax(custJSON);
     });
 
-
     //Click Row
     $("#customer-tbl-body").on("click", "tr", function() {
       row_index = $(this).index();
@@ -401,11 +400,46 @@
       let price = $("#price").val();
       let description = $("#description").val();
 
-      let record = `<tr><td class="item_id">${item_id}</td><td class="item_name">${item_name}</td><td class="quantity">${quantity}</td><td class="price">${price}</td><td class="description">${description}</td></tr>`;
-      $("#item-tbl-body").append(record);
+      /*let record = `<tr><td class="item_id">${item_id}</td><td class="item_name">${item_name}</td><td class="quantity">${quantity}</td><td class="price">${price}</td><td class="description">${description}</td></tr>`;
+      $("#item-tbl-body").append(record);*/
 
-      $("#storebtns>button[type='reset']").click();
+      //------------------------------------------------------
+      const item = {
+        item_id: item_id,
+        item_name: item_name,
+        quantity: quantity,
+        price: price,
+        description: description
+      };
 
+      const item_JSON = JSON.stringify(item);
+
+      const sendAjax = (itemJSON) => {
+        $.ajax({
+          url: "http://localhost:8080/Assignment/item",
+          type: "POST",
+          data: itemJSON,
+          contentType: "application/json",
+          success: function () {
+            loadAllCustomer();
+            $("#storebtns>button[type='reset']").click();
+            Swal.fire({
+              icon: 'success',
+              title: 'Item Saved Successful',
+              showConfirmButton: false,
+              timer: 1500
+            })
+          },
+          error: function () {
+            Swal.fire({
+              icon: 'error',
+              title: 'Please Check Text Field',
+              text: 'Something went wrong!'
+            })
+          }
+        });
+      };
+      sendAjax(item_JSON);
     });
 
     //Click Row

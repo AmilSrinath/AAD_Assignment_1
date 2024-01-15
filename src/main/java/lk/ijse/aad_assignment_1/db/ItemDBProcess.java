@@ -1,0 +1,37 @@
+package lk.ijse.aad_assignment_1.db;
+
+import lk.ijse.aad_assignment_1.dto.CustomerDTO;
+import lk.ijse.aad_assignment_1.dto.ItemDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
+/**
+ * @author Amil Srinath
+ */
+public class ItemDBProcess {
+    final static Logger logger = LoggerFactory.getLogger(ItemDBProcess.class);
+    public boolean saveItem(ItemDTO itemDTO, Connection connection){
+        try {
+            var ps = connection.prepareStatement("INSERT INTO item(item_id,item_name,quantity,price,description) VALUES (?,?,?,?,?)");
+            ps.setString(1, itemDTO.getItem_id());
+            ps.setString(2, itemDTO.getItem_name());
+            ps.setInt(3, itemDTO.getQuantity());
+            ps.setDouble(4, itemDTO.getPrice());
+            ps.setString(5, itemDTO.getDescription());
+
+            if (ps.executeUpdate() != 0) {
+                logger.info("Data saved");
+                return true;
+            } else {
+                logger.error("Failed to save");
+                return false;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
