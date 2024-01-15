@@ -57,4 +57,40 @@ public class ItemDBProcess {
         }
         return itemDTOS;
     }
+
+    public boolean updateItem(ItemDTO itemDTO, Connection connection) {
+        try {
+            var ps = connection.prepareStatement("UPDATE item set item_name=?, quantity=?, price=?, description=? where item_id=?");
+            ps.setString(1, itemDTO.getItem_name());
+            ps.setInt(2, itemDTO.getQuantity());
+            ps.setDouble(3, itemDTO.getPrice());
+            ps.setString(4, itemDTO.getDescription());
+            ps.setString(5, itemDTO.getItem_id());
+
+            if (ps.executeUpdate() != 0) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean deleteItem(String itemId, Connection connection) {
+        try {
+            var ps = connection.prepareStatement("DELETE from item where item_id=?");
+            ps.setString(1, itemId);
+
+            if (ps.executeUpdate() != 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

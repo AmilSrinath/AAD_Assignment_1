@@ -61,4 +61,24 @@ public class Item extends HttpServlet {
             writer.write("Item Saved !");
         }
     }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Jsonb jsonb = JsonbBuilder.create();
+        ItemDTO itemDTO = jsonb.fromJson(req.getReader(), ItemDTO.class);
+
+        ItemDBProcess itemDBProcess = new ItemDBProcess();
+
+        if(itemDBProcess.updateItem(itemDTO, connection)){
+            PrintWriter writer = resp.getWriter();
+            writer.write("Customer Updated !");
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if(new ItemDBProcess().deleteItem(req.getParameter("item_id"),connection)){
+            resp.getWriter().write("Item Deleted!");
+        }
+    }
 }

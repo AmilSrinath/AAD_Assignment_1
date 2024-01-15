@@ -388,7 +388,6 @@
           });
         }
       })
-
     })
 
     //-----------------------------Store--------------------------------
@@ -406,7 +405,7 @@
           }
         }
       })
-    }
+    };
 
     //Submit
     $("#storebtns>button[type='button']").eq(0).on("click", () => {
@@ -470,7 +469,7 @@
       $("#quantity").val(quantity);
       $("#price").val(price);
       $("#description").val(description);
-    })
+    });
 
     //Update
     $("#storebtns>button[type='button']").eq(1).on("click", () => {
@@ -480,18 +479,74 @@
       let price = $("#price").val();
       let description = $("#description").val();
 
-      let record = `<td class="item_id">${item_id}</td><td class="item_name">${item_name}</td><td class="quantity">${quantity}</td><td class="price">${price}</td><td class="description">${description}</td>`;
-      $("tbody>tr").eq(row_index1).html(record);
+      const item = {
+        item_id: item_id,
+        item_name: item_name,
+        quantity: quantity,
+        price: price,
+        description: description
+      };
 
-      $("#storebtns>button[type='reset']").click();
+      const item_JSON = JSON.stringify(item);
 
+      const sendAjax = (itemJSON) => {
+        $.ajax({
+          url: "http://localhost:8080/Assignment/item",
+          type: "PUT",
+          data: itemJSON,
+          contentType: "application/json",
+          success: function () {
+            loadAllItem();
+            $("#storebtns>button[type='reset']").click();
+            Swal.fire({
+              icon: 'success',
+              title: 'Item Update Successful',
+              showConfirmButton: false,
+              timer: 1500
+            })
+          },
+          error: function () {
+            Swal.fire({
+              icon: 'error',
+              title: 'Please Check Text Field',
+              text: 'Something went wrong!'
+            })
+          }
+        });
+      };
+      sendAjax(item_JSON);
     });
 
     //Delete
     $("#storebtns>button[type='button']").eq(2).on("click", () => {
-      $("tbody>tr").eq(row_index1).remove();
-      $("button[type='reset']").click();
-    })
+      let item_id = $("#item_id").val();
+
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You want delete row?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire(
+                  'Deleted!',
+                  'Your row has been deleted.',
+                  'success'
+          )
+          $.ajax({
+            url: "http://localhost:8080/Assignment/item?item_id="+item_id,
+            type: "DELETE",
+            success: function () {
+              $("#storebtns>button[type='reset']").click();
+              loadAllItem();
+            }
+          });
+        }
+      })
+    });
 
 
     //-----------------------------Place Order--------------------------------
