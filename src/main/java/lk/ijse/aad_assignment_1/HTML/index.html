@@ -46,7 +46,7 @@
         <form id="customer_Form">
           <div class="mb-3">
             <label for="cus_id" class="form-label">Cus_ID</label>
-            <input type="number" class="form-control" id="cus_id">
+            <input type="text" class="form-control" id="cus_id" disabled>
           </div>
 
           <div class="mb-3">
@@ -261,6 +261,7 @@
       $("#placeOrderForm").css('display','none');
       $("#myTabContent").css('display','none');
       loadAllCustomer();
+      setTimeout(After1Minute, 60);
     })
 
     $("#store-nav").on('click',()=>{
@@ -281,9 +282,9 @@
 
     //-----------------------------Customer--------------------------------
     var row_index = null;
-
     var allItem;
-    var allCustomer;
+    var lastCustomer;
+    var customerCount;
 
     function loadAllCustomer() {
       $("#customer-tbl-body").empty();
@@ -300,17 +301,31 @@
             $("#customer-tbl-body").append(record);
           }
           for (const customer of response){
-            allCustomer = response;
-
             let recode = `<option class="options">${customer.name}</option>`
             $("#selectCus_ID").append(recode);
           }
+
+          lastCustomer = response[response.length - 1];
+          customerCount = response.length;
         }
       })
-      console.log();
     }
 
-    //Submit
+    // Change function name from genarateID to generateID
+    function generateCustomerID() {
+      if (customerCount === 0) {
+        $("#cus_id").val("C001");
+      } else {
+        const lastID = lastCustomer.cus_id.split("C");
+        const lastNumber = parseInt(lastID[1], 10);
+        const newNumber = lastNumber + 1;
+        const newID = "C" + newNumber.toString().padStart(3, '0');
+        $("#cus_id").val(newID);
+        console.log(newID);
+      }
+    }
+
+    // Submit
     $("#customerbtns > button[type='button']").eq(0).on("click", () => {
       let cus_id = $("#cus_id").val();
       let name = $("#name").val();
@@ -352,7 +367,12 @@
         });
       };
       sendAjax(custJSON);
+      setTimeout(After1Minute, 60);
     });
+
+    function After1Minute() {
+      generateCustomerID();
+    }
 
     //Click Row
     $("#customer-tbl-body").on("click", "tr", function() {
@@ -411,6 +431,7 @@
         });
       };
       sendAjax(custJSON);
+      setTimeout(After1Minute, 60);
     });
 
     //Delete
@@ -432,6 +453,7 @@
                   'Your row has been deleted.',
                   'success'
           )
+          setTimeout(After1Minute, 60);
           $.ajax({
             url: "http://localhost:8080/Assignment/customer?cus_id="+cus_id,
             type: "DELETE",
