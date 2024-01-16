@@ -5,6 +5,7 @@
     <title>Index</title>
   <link rel="stylesheet" href="assest/bootstrap-5/css/bootstrap.min.css">
   <link rel="stylesheet" href="Style.css">
+  <link rel="stylesheet" href="assest/fontawesome-free-6/css/all.min.css">
 </head>
 <body>
 
@@ -244,6 +245,7 @@
 <script src="assest/lib/jquery.min.js"></script>
 <script src="assest/bootstrap-5/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="assest/fontawesome-free-6/js/all.min.js"></script>
 
   <script>
     loadAllCustomer();
@@ -280,6 +282,9 @@
     //-----------------------------Customer--------------------------------
     var row_index = null;
 
+    var allItem;
+    var allCustomer;
+
     function loadAllCustomer() {
       $("#customer-tbl-body").empty();
 
@@ -295,11 +300,14 @@
             $("#customer-tbl-body").append(record);
           }
           for (const customer of response){
+            allCustomer = response;
+
             let recode = `<option class="options">${customer.name}</option>`
             $("#selectCus_ID").append(recode);
           }
         }
       })
+      console.log();
     }
 
     //Submit
@@ -454,6 +462,8 @@
             $("#item-tbl-body").append(record);
           }
           for (const item of response){
+            allItem = response;
+
             let recode = `<option class="options">${item.item_id}</option>`
             $("#select").append(recode);
           }
@@ -604,6 +614,136 @@
 
 
     //-----------------------------Place Order--------------------------------
+
+    //Combo Box Row Click
+    $(document).ready(function() {
+      $('#select').change(function(){
+        var selectedOption = $(this).find('option:selected');
+        let item_id = selectedOption.val();
+
+        for (const item of allItem){
+          if (item_id===item.item_id){
+            $('#itemName').text(item.item_name);
+            $('#itemQut').text(item.quantity);
+            $('#itemPrice').text(item.price);
+          }
+        }
+            $('#quantity_placeOrder').focus();
+      });
+    });
+
+    document.getElementById("select").addEventListener("change", function() {
+      if($('#select').val() === "Select Item ID"){
+        $('#itemName').text("______________________________");
+        $('#itemQut').text("_____________");
+        $('#itemPrice').text("___________");
+      }
+    });
+
+
+    //Add Button
+    $("#placeOrderbtns>button[type='button']").eq(0).on("click", () => {
+
+      let item_id = $("#select").val();
+      let quantity;
+      let unit_price;
+      let total;
+
+      var itemElement;
+
+      for (const item of allItem){
+        if (item_id===item.item_id){
+          itemElement = item;
+          quantity = parseInt($("#quantity_placeOrder").val());
+          unit_price = parseFloat(item.price);
+          total = quantity * unit_price;
+        }
+      }
+
+      let existingRow = $(`#placeOrder-tbody tr[data-item-id="${item_id}"]`);
+
+      if (existingRow.length) {
+        let existingQuantity = parseInt(existingRow.find('.quantity').text());
+        let newQuantity = existingQuantity + quantity;
+        let newTotal = newQuantity * unit_price;
+
+        if (itemElement && newQuantity <= itemElement.quantity) {
+          existingRow.find('.quantity').text(newQuantity);
+          existingRow.find('.price').text(newTotal);
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'The quantity is not enough!',
+            text: 'Something went wrong!'
+          });
+        }
+      } else {
+        if (itemElement && itemElement.quantity >= quantity) {
+          let record = `
+    <tr data-item-id="${item_id}">
+        <td class="item_id">${item_id}</td>
+        <td class="item_price">${unit_price}</td>
+        <td class="quantity">${quantity}</td>
+        <td class="price">${total}</td>
+        <td class="button">
+            <button class="removeButton" type="button">
+                <i class="fas fa-trash"></i>
+            </button>
+        </td>
+    </tr>`;
+
+          $("#placeOrder-tbody").append(record);
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'The quantity is not enough!',
+            text: 'Something went wrong!'
+          });
+        }
+
+      }
+
+      let netTot = 0;
+      $("#placeOrder-tbody tr").each(function() {
+        netTot += parseFloat($(this).find('.price').text());
+      });
+
+      $("#tot").text(netTot);
+
+      $(".removeButton").on("click", function() {
+        $(this).closest('tr').remove();
+
+        let newNetTot = 0;
+        $("#placeOrder-tbody tr").each(function() {
+          newNetTot += parseFloat($(this).find('.price').text());
+        });
+
+        $("#tot").text(newNetTot);
+      });
+
+      $('#itemName').text("______________________________");
+      $('#itemQut').text("_____________");
+      $('#itemPrice').text("___________");
+
+      $("#select").val("Select Item ID");
+      $("#quantity_placeOrder").val("")
+    });
+
+    $("#placeOrderbtnResetbtn").eq(0).on("click", () => {
+      $('#itemName').text("______________________________");
+      $('#itemQut').text("_____________");
+      $('#itemPrice').text("___________");
+      $('#placeOrder-tbody>tr').remove();
+      $("#tot").text(0);
+      $('#netTotal').text(0);
+    });
+
+    $("#calculate").on("click", () => {
+      let tot = $("#tot").text();
+      let discount = $("#discount").val();
+
+      $('#netTotal').text(tot*(discount/100));
+    });
 
 
     /* ------------------------------Form Design----------------------------------- */
