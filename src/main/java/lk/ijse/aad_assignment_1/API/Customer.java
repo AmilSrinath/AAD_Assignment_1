@@ -58,7 +58,6 @@ public class Customer extends HttpServlet {
             PrintWriter writer = resp.getWriter();
             writer.write("Customer Saved !");
         }
-
     }
 
     @Override

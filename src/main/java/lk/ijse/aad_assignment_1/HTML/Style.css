@@ -374,3 +374,11 @@
     letter-spacing: 0.8px;
     cursor: pointer;
 }
+
+#OrderHistory{
+    font-size: 40px;
+    position: relative;
+    margin-left: 43%;
+    margin-bottom: 50px;
+    margin-top: 40px;
+}

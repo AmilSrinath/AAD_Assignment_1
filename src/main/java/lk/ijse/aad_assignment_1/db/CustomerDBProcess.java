@@ -30,7 +30,6 @@ public class CustomerDBProcess {
                 logger.error("Failed to save");
                 return false;
             }
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

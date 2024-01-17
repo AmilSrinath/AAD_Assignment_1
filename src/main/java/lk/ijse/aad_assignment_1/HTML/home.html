@@ -25,8 +25,13 @@
       <li class="nav-item">
         <a class="nav-link" id="place-order-nav">Place Order</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" id="OrderHistory-nav">Order History</a>
+      </li>
     </ul>
   </div>
+
+  <div id="currentDateContainer"><span id="currentDate"></span></div>
 </nav>
 
   <!--HomeForm-->
@@ -69,7 +74,7 @@
             <button type="button" class="btn btn-success">Submit</button>
             <button type="button" class="btn btn-primary">Update</button>
             <button type="button" class="btn btn-danger">Delete</button>
-            <button type="reset" class="btn btn-warning">Reset</button>
+            <button type="button" class="btn btn-warning">Reset</button>
           </div>
         </form>
       </div>
@@ -99,7 +104,7 @@
       <form>
         <div class="mb-3">
           <label for="item_id" class="form-label">Item_ID</label>
-          <input type="number" class="form-control" id="item_id">
+          <input type="text" class="form-control" id="item_id" disabled>
         </div>
 
         <div class="mb-3">
@@ -127,7 +132,7 @@
           <button type="button" class="btn btn-success">Submit</button>
           <button type="button" class="btn btn-primary">Update</button>
           <button type="button" class="btn btn-danger">Delete</button>
-          <button type="reset" class="btn btn-warning">Reset</button>
+          <button type="button" class="btn btn-warning">Reset</button>
         </div>
       </form>
     </div>
@@ -241,6 +246,26 @@
   </div>
 </div>
 
+<!-- Order History Form -->
+<div id="OrderHistoryForm" class="container">
+  <p id="OrderHistory">Order History</p>
+  <div class="row">
+    <!--Table-->
+    <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-6 col6">
+      <table class="table">
+        <thead>
+        <tr>
+          <th class="table-heading" scope="col">Date</th>
+          <th class="table-heading" scope="col">Order_ID</th>
+          <th class="table-heading" scope="col">Customer_ID</th>
+          <th class="table-heading" scope="col">Net_Total</th>
+        </tr>
+        </thead>
+        <tbody class="table-tr" id="OrderHistory-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
 <script src="assest/lib/jquery.min.js"></script>
 <script src="assest/bootstrap-5/js/bootstrap.min.js"></script>
@@ -248,11 +273,33 @@
 <script src="assest/fontawesome-free-6/js/all.min.js"></script>
 
   <script>
+    $(document).ready(function() {
+      // Function to format the date
+      function formatDate(date) {
+        const options = {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        };
+        return date.toLocaleString('en-US', options);
+      }
+
+      // Get the current date
+      const currentDate = new Date();
+
+      // Format the date
+      const formattedDate = formatDate(currentDate);
+
+      // Display the formatted date in the HTML element
+      $('#currentDate').text(formattedDate);
+    });
+
     loadAllCustomer();
     loadAllItem();
     $("#customerForm").css('display','none');
     $("#storeForm").css('display','none');
     $("#placeOrderForm").css('display','none');
+    $("#OrderHistoryForm").css('display','none');
 
     //-----------------------------Navigation--------------------------------
     $("#customer-nav").on('click',()=>{
@@ -260,6 +307,7 @@
       $("#storeForm").css('display','none');
       $("#placeOrderForm").css('display','none');
       $("#myTabContent").css('display','none');
+      $("#OrderHistoryForm").css('display','none');
       loadAllCustomer();
       setTimeout(After1Minute, 60);
     })
@@ -269,7 +317,9 @@
       $("#storeForm").css('display','block');
       $("#placeOrderForm").css('display','none');
       $("#myTabContent").css('display','none');
+      $("#OrderHistoryForm").css('display','none');
       loadAllItem();
+      setTimeout(After1Minute, 60);
     })
 
     $("#place-order-nav").on('click',()=>{
@@ -277,7 +327,74 @@
       $("#storeForm").css('display','none');
       $("#placeOrderForm").css('display','block');
       $("#myTabContent").css('display','none');
+      $("#OrderHistoryForm").css('display','none');
       loadAllCustomer();
+    })
+
+    $("#OrderHistory-nav").on('click',()=>{
+      $("#customerForm").css('display','none');
+      $("#storeForm").css('display','none');
+      $("#placeOrderForm").css('display','none');
+      $("#myTabContent").css('display','none');
+      $("#OrderHistoryForm").css('display','block');
+    });
+
+    /* ------------------------------Form Design----------------------------------- */
+
+    $("#customer-nav").on('click',()=>{
+      $("#customer-nav").css('background','white');
+      $("#customer-nav").css('color','black');
+
+      $("#store-nav").css('background','#0d6efd');
+      $("#store-nav").css('color','white');
+
+      $("#place-order-nav").css('background','#0d6efd');
+      $("#place-order-nav").css('color','white');
+
+      $("#OrderHistory-nav").css('background','#0d6efd');
+      $("#OrderHistory-nav").css('color','white');
+    })
+
+    $("#store-nav").on('click',()=>{
+      $("#store-nav").css('background','white');
+      $("#store-nav").css('color','black');
+
+      $("#customer-nav").css('background','#0d6efd');
+      $("#customer-nav").css('color','white');
+
+      $("#place-order-nav").css('background','#0d6efd');
+      $("#place-order-nav").css('color','white');
+
+      $("#OrderHistory-nav").css('background','#0d6efd');
+      $("#OrderHistory-nav").css('color','white');
+    })
+
+    $("#place-order-nav").on('click',()=>{
+      $("#place-order-nav").css('background','white');
+      $("#place-order-nav").css('color','black');
+
+      $("#customer-nav").css('background','#0d6efd');
+      $("#customer-nav").css('color','white');
+
+      $("#store-nav").css('background','#0d6efd');
+      $("#store-nav").css('color','white');
+
+      $("#OrderHistory-nav").css('background','#0d6efd');
+      $("#OrderHistory-nav").css('color','white');
+    })
+
+    $("#OrderHistory-nav").on('click',()=>{
+      $("#OrderHistory-nav").css('background','white');
+      $("#OrderHistory-nav").css('color','black');
+
+      $("#place-order-nav").css('background','#0d6efd');
+      $("#place-order-nav").css('color','white');
+
+      $("#customer-nav").css('background','#0d6efd');
+      $("#customer-nav").css('color','white');
+
+      $("#store-nav").css('background','#0d6efd');
+      $("#store-nav").css('color','white');
     })
 
     //-----------------------------Customer--------------------------------
@@ -311,7 +428,7 @@
       })
     }
 
-    // Change function name from genarateID to generateID
+    //generate Customer_ID
     function generateCustomerID() {
       if (customerCount === 0) {
         $("#cus_id").val("C001");
@@ -321,7 +438,6 @@
         const newNumber = lastNumber + 1;
         const newID = "C" + newNumber.toString().padStart(3, '0');
         $("#cus_id").val(newID);
-        console.log(newID);
       }
     }
 
@@ -349,7 +465,7 @@
           contentType: "application/json",
           success: function () {
             loadAllCustomer();
-            $("#customerbtns>button[type='reset']").click();
+            $("#customerbtns>button[type='button']").eq(3).click();
             Swal.fire({
               icon: 'success',
               title: 'Customer Saved Successful',
@@ -372,6 +488,7 @@
 
     function After1Minute() {
       generateCustomerID();
+      generateItemID();
     }
 
     //Click Row
@@ -388,6 +505,13 @@
       $("#nic").val(nic);
       $("#address").val(address);
     })
+
+    $("#customerbtns>button[type='button']").eq(3).on("click", () => {
+      setTimeout(After1Minute, 60);
+      $("#name").val("");
+      $("#nic").val("");
+      $("#address").val("");
+    });
 
     //Update
     $("#customerbtns>button[type='button']").eq(1).on("click", () => {
@@ -413,7 +537,7 @@
           contentType: "application/json",
           success: function () {
             loadAllCustomer();
-            $("#customerbtns>button[type='reset']").click();
+            $("#customerbtns>button[type='button']").eq(3).click();
             Swal.fire({
               icon: 'success',
               title: 'Customer Update Successful',
@@ -454,11 +578,12 @@
                   'success'
           )
           setTimeout(After1Minute, 60);
+          $("#customerbtns>button[type='button']").eq(3).click();
           $.ajax({
             url: "http://localhost:8080/Assignment/customer?cus_id="+cus_id,
             type: "DELETE",
             success: function () {
-              $("#customerbtns>button[type='reset']").click();
+              $("#storebtns>button[type='button']").eq(3).click();
               loadAllCustomer();
             }
           });
@@ -468,6 +593,9 @@
 
     //-----------------------------Store--------------------------------
     var row_index1 = null;
+
+    var lastItem;
+    var itemCount;
 
     function loadAllItem() {
       $("#item-tbl-body").empty();
@@ -489,9 +617,33 @@
             let recode = `<option class="options">${item.item_id}</option>`
             $("#select").append(recode);
           }
+
+          lastItem = response[response.length - 1];
+          itemCount = response.length;
         }
       })
     };
+
+    $("#storebtns>button[type='button']").eq(3).on("click", () => {
+      setTimeout(After1Minute, 60);
+      $("#quantity").val("");
+      $("#item_name").val("");
+      $("#price").val("");
+      $("#description").val("");
+    });
+
+    //generate Customer_ID
+    function generateItemID() {
+      if (itemCount === 0) {
+        $("#item_id").val("I001");
+      } else {
+        const lastID = lastItem.item_id.split("I");
+        const lastNumber = parseInt(lastID[1], 10);
+        const newNumber = lastNumber + 1;
+        const newID = "I" + newNumber.toString().padStart(3, '0');
+        $("#item_id").val(newID);
+      }
+    }
 
     //Submit
     $("#storebtns>button[type='button']").eq(0).on("click", () => {
@@ -520,7 +672,7 @@
           contentType: "application/json",
           success: function () {
             loadAllItem();
-            $("#storebtns>button[type='reset']").click();
+            $("#storebtns>button[type='button']").eq(3).click();
             Swal.fire({
               icon: 'success',
               title: 'Item Saved Successful',
@@ -538,6 +690,7 @@
         });
       };
       sendAjax(item_JSON);
+      setTimeout(After1Minute, 60);
     });
 
     //Click Row
@@ -583,7 +736,7 @@
           contentType: "application/json",
           success: function () {
             loadAllItem();
-            $("#storebtns>button[type='reset']").click();
+            $("#storebtns>button[type='button']").eq(3).click();
             Swal.fire({
               icon: 'success',
               title: 'Item Update Successful',
@@ -601,6 +754,7 @@
         });
       };
       sendAjax(item_JSON);
+      setTimeout(After1Minute, 60);
     });
 
     //Delete
@@ -622,11 +776,12 @@
                   'Your row has been deleted.',
                   'success'
           )
+          setTimeout(After1Minute, 60);
           $.ajax({
             url: "http://localhost:8080/Assignment/item?item_id="+item_id,
             type: "DELETE",
             success: function () {
-              $("#storebtns>button[type='reset']").click();
+              $("#storebtns>button[type='button']").eq(3).click();
               loadAllItem();
             }
           });
