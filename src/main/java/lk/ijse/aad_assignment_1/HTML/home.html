@@ -323,6 +323,7 @@
       $("#myTabContent").css('display','none');
       $("#OrderHistoryForm").css('display','none');
       loadAllCustomer();
+      setTimeout(After1Minute, 60);
     })
 
     $("#OrderHistory-nav").on('click',()=>{
@@ -798,7 +799,7 @@
         type: "GET",
         success: function (response) {
           for (const order of response){
-            let recode = `<tr><td class='date'>${order.date}</td><td class='order_id'>${order.order_id}</td><td class='cus_id'>${order.customer_id}</td><td class='net_total'>${order.net_total}</td></tr>`
+            let recode = `<tr><td class='date'>${order.date}</td><td class='order_id'>${order.order_id}</td><td class='cus_id'>${order.cusName}</td><td class='net_total'>${order.netTotal}</td></tr>`
             $("#OrderHistory-tbody").append(recode);
           }
 
@@ -813,11 +814,12 @@
       if (orderCount === 0) {
         $('#Order_id').text("O001");
       } else {
-        const lastID = lastOrder.orderId.split("O");
+        const lastID = lastOrder.order_id.split("O");
         const lastNumber = parseInt(lastID[1], 10);
         const newNumber = lastNumber + 1;
         const newID = "O" + newNumber.toString().padStart(3, '0');
         $('#Order_id').text(newID);
+        console.log(newID);
       }
     }
 
