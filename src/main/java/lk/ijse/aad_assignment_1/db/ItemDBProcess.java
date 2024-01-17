@@ -93,4 +93,21 @@ public class ItemDBProcess {
         }
         return false;
     }
+
+    public boolean updateItemQuantity(ItemDTO itemDTO, Connection connection) {
+        try {
+            var ps = connection.prepareStatement("UPDATE item set quantity = quantity - ? where item_id = ?");
+            ps.setInt(1, itemDTO.getQuantity());
+            ps.setString(2, itemDTO.getItem_id());
+
+            if (ps.executeUpdate() != 0) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

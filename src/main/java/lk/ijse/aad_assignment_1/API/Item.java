@@ -71,7 +71,7 @@ public class Item extends HttpServlet {
 
         if(itemDBProcess.updateItem(itemDTO, connection)){
             PrintWriter writer = resp.getWriter();
-            writer.write("Customer Updated !");
+            writer.write("Item Updated !");
         }
     }
 

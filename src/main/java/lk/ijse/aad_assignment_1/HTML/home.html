@@ -303,6 +303,7 @@
       $("#myTabContent").css('display','none');
       $("#OrderHistoryForm").css('display','none');
       loadAllCustomer();
+      loadAllOrder();
       setTimeout(After1Minute, 60);
     })
 
@@ -313,6 +314,7 @@
       $("#myTabContent").css('display','none');
       $("#OrderHistoryForm").css('display','none');
       loadAllItem();
+      loadAllOrder();
       setTimeout(After1Minute, 60);
     })
 
@@ -956,17 +958,48 @@
 
     //Place Order Button
     $("#place_Order").on('click',()=>{
+      let amount = parseFloat($('#amount').val());
       let netTotal = parseFloat($('#netTotal').text());
       let date = $('#currentDate').text();
       let order_id = $('#Order_id').text();
 
       var selectedOption = $('#selectCus_ID').find('option:selected');
-      let cusName = selectedOption.val();
+      let cusName = selectedOption.val()
 
-      console.log(date);
-      console.log(order_id);
-      console.log(cusName);
-      console.log(netTotal);
+      $("#placeOrder-tbody tr").each(function() {
+        let quantity = parseFloat($(this).find('.quantity').text());
+        let item_id = $(this).find('.item_id').text();
+
+        console.log(item_id,quantity);
+
+        //-----------------Update Item Quantity-----------------
+        const item = {
+          item_id: item_id,
+          quantity: quantity
+        };
+
+        const item_JSON = JSON.stringify(item);
+
+        const sendAjax = (itemJSON) => {
+          $.ajax({
+            url: "http://localhost:8080/Assignment/order",
+            type: "PUT",
+            data: itemJSON,
+            contentType: "application/json",
+            success: function () {
+              loadAllItem();
+              /*$("#storebtns>button[type='button']").eq(3).click();*/
+              /*Swal.fire({
+                icon: 'success',
+                title: 'Item Update Successful',
+                showConfirmButton: false,
+                timer: 1500
+              })*/
+            }
+          });
+        };
+        sendAjax(item_JSON);
+      });
 
 
       const order = {
@@ -980,33 +1013,46 @@
 
       console.log(order_JSON)
 
-      const sendAjax = (orderJSON) => {
-        $.ajax({
-          url: "http://localhost:8080/Assignment/order",
-          type: "POST",
-          data: orderJSON,
-          contentType: "application/json",
-          success: function () {
-            loadAllOrder();
-            setTimeout(After1Minute, 60);
-            /*$("#storebtns>button[type='button']").eq(3).click();*/
-            Swal.fire({
-              icon: 'success',
-              title: 'Order Saved Successful',
-              showConfirmButton: false,
-              timer: 1500
-            })
-          },
-          error: function () {
-            Swal.fire({
-              icon: 'error',
-              title: 'Please Check Text Field',
-              text: 'Something went wrong!'
-            })
-          }
+      if (amount >= netTotal) {
+        let cash = amount - netTotal;
+        const sendAjax = (orderJSON) => {
+          $.ajax({
+            url: "http://localhost:8080/Assignment/order",
+            type: "POST",
+            data: orderJSON,
+            contentType: "application/json",
+            success: function () {
+              loadAllOrder();
+              setTimeout(After1Minute, 60);
+              $('#amount').val("");
+              $('#tot').text(0);
+              $('#netTotal').text(0);
+              $('#discount').val(0);
+              $('#placeOrderbtnResetbtn').click();
+              /*$("#storebtns>button[type='button']").eq(3).click();*/
+              Swal.fire({
+                icon: 'success',
+                title: `Order Successful! \n Cash: ${cash.toFixed(2)}`,
+                showConfirmButton: true
+              });
+            },
+            error: function () {
+              Swal.fire({
+                icon: 'error',
+                title: 'Please Check Text Field',
+                text: 'Something went wrong!'
+              })
+            }
+          });
+        };
+        sendAjax(order_JSON);
+      }else {
+        Swal.fire({
+          icon: 'error',
+          title: 'The amount is not enough!',
+          text: 'Something went wrong!'
         });
-      };
-      sendAjax(order_JSON);
+      }
     });
 
     /* ------------------------------Form Design----------------------------------- */

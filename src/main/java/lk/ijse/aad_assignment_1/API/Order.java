@@ -64,4 +64,17 @@ public class Order extends HttpServlet {
             writer.write("Order Saved !");
         }
     }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Jsonb jsonb = JsonbBuilder.create();
+        ItemDTO itemDTO = jsonb.fromJson(req.getReader(), ItemDTO.class);
+
+        ItemDBProcess itemDBProcess = new ItemDBProcess();
+
+        if(itemDBProcess.updateItemQuantity(itemDTO, connection)){
+            PrintWriter writer = resp.getWriter();
+            writer.write("Item Quantity Updated !");
+        }
+    }
 }
