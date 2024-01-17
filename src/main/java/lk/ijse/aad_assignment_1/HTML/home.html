@@ -274,7 +274,6 @@
 
   <script>
     $(document).ready(function() {
-      // Function to format the date
       function formatDate(date) {
         const options = {
           year: 'numeric',
@@ -284,13 +283,8 @@
         return date.toLocaleString('en-US', options);
       }
 
-      // Get the current date
       const currentDate = new Date();
-
-      // Format the date
       const formattedDate = formatDate(currentDate);
-
-      // Display the formatted date in the HTML element
       $('#currentDate').text(formattedDate);
     });
 
@@ -337,6 +331,7 @@
       $("#placeOrderForm").css('display','none');
       $("#myTabContent").css('display','none');
       $("#OrderHistoryForm").css('display','block');
+      loadAllOrder();
     });
 
     /* ------------------------------Form Design----------------------------------- */
@@ -489,6 +484,7 @@
     function After1Minute() {
       generateCustomerID();
       generateItemID();
+      generateOrderID();
     }
 
     //Click Row
@@ -792,6 +788,39 @@
 
     //-----------------------------Place Order--------------------------------
 
+    var lastOrder;
+    var orderCount;
+
+    function loadAllOrder() {
+      $("#OrderHistory-tbody").empty();
+      $.ajax({
+        url: "http://localhost:8080/Assignment/order",
+        type: "GET",
+        success: function (response) {
+          for (const order of response){
+            let recode = `<tr><td class='date'>${order.date}</td><td class='order_id'>${order.order_id}</td><td class='cus_id'>${order.customer_id}</td><td class='net_total'>${order.net_total}</td></tr>`
+            $("#OrderHistory-tbody").append(recode);
+          }
+
+          lastOrder = response[response.length - 1];
+          orderCount = response.length;
+        }
+      })
+    }
+
+    //generate Customer_ID
+    function generateOrderID() {
+      if (orderCount === 0) {
+        $('#Order_id').text("O001");
+      } else {
+        const lastID = lastOrder.orderId.split("O");
+        const lastNumber = parseInt(lastID[1], 10);
+        const newNumber = lastNumber + 1;
+        const newID = "O" + newNumber.toString().padStart(3, '0');
+        $('#Order_id').text(newID);
+      }
+    }
+
     //Combo Box Row Click
     $(document).ready(function() {
       $('#select').change(function(){
@@ -922,6 +951,61 @@
       $('#netTotal').text(tot*(discount/100));
     });
 
+    //Place Order Button
+    $("#place_Order").on('click',()=>{
+      let netTotal = parseFloat($('#netTotal').text());
+      let date = $('#currentDate').text();
+      let order_id = $('#Order_id').text();
+
+      var selectedOption = $('#selectCus_ID').find('option:selected');
+      let cusName = selectedOption.val();
+
+      console.log(date);
+      console.log(order_id);
+      console.log(cusName);
+      console.log(netTotal);
+
+
+      const order = {
+        date: date,
+        order_id: order_id,
+        cusName: cusName,
+        netTotal: netTotal
+      };
+
+      const order_JSON = JSON.stringify(order);
+
+      console.log(order_JSON)
+
+      const sendAjax = (orderJSON) => {
+        $.ajax({
+          url: "http://localhost:8080/Assignment/order",
+          type: "POST",
+          data: orderJSON,
+          contentType: "application/json",
+          success: function () {
+            loadAllItem();
+            /*$("#storebtns>button[type='button']").eq(3).click();*/
+            Swal.fire({
+              icon: 'success',
+              title: 'Order Saved Successful',
+              showConfirmButton: false,
+              timer: 1500
+            })
+          },
+          error: function () {
+            Swal.fire({
+              icon: 'error',
+              title: 'Please Check Text Field',
+              text: 'Something went wrong!'
+            })
+          }
+        });
+      };
+      sendAjax(order_JSON);
+      setTimeout(After1Minute, 60);
+
+    });
 
     /* ------------------------------Form Design----------------------------------- */
 

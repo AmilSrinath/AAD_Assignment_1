@@ -13,8 +13,8 @@ import lombok.ToString;
 @Data
 @ToString
 public class OrderDTO {
-    private String item_id;
-    private double unite_price;
-    private int quantity;
-    private double total;
+    private String date;
+    private String order_id;
+    private String cusName;
+    private double netTotal;
 }
