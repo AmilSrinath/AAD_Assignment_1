@@ -322,8 +322,8 @@
       $("#placeOrderForm").css('display','block');
       $("#myTabContent").css('display','none');
       $("#OrderHistoryForm").css('display','none');
-      loadAllCustomer();
-      setTimeout(After1Minute, 60);
+      loadAllOrder();
+      setTimeout(After1Minute, 10);
     })
 
     $("#OrderHistory-nav").on('click',()=>{
@@ -483,6 +483,7 @@
     });
 
     function After1Minute() {
+      generateOrderID();
       generateCustomerID();
       generateItemID();
       generateOrderID();
@@ -986,7 +987,8 @@
           data: orderJSON,
           contentType: "application/json",
           success: function () {
-            loadAllItem();
+            loadAllOrder();
+            setTimeout(After1Minute, 60);
             /*$("#storebtns>button[type='button']").eq(3).click();*/
             Swal.fire({
               icon: 'success',
@@ -1005,8 +1007,6 @@
         });
       };
       sendAjax(order_JSON);
-      setTimeout(After1Minute, 60);
-
     });
 
     /* ------------------------------Form Design----------------------------------- */
