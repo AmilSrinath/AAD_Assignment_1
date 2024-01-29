@@ -4,6 +4,8 @@
 
 This repository contains the Java EE implementation of a comprehensive API for the existing front-end In-Memory POS system. The API integrates various specifications, including Servlet, JSON, and JNDI, to provide basic CRUD operations, fundamental validations, appropriate design patterns, database integration with SQL through JNDI, a proper logging mechanism, and thorough API documentation.
 
+<a href="https://www.postman.com/satellite-geologist-59329391/workspace/work-space/collection/32546540-76b2308f-e33c-4479-9179-6beb7e5f1918" target="_blank">Postman</a>
+
 <h3>Components</h3>
 
 <h3>1. Basic CRUD Operations</h3>
